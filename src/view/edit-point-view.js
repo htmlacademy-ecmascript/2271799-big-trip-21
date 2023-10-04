@@ -1,8 +1,7 @@
 import flatpickr from 'flatpickr';
-import _ from 'lodash';
+// import _ from 'lodash';
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import { TYPES } from '../const';
-import { mockOffers } from '../mock/offer.js';
 import dayjs from 'dayjs';
 
 import 'flatpickr/dist/flatpickr.min.css';
@@ -58,16 +57,17 @@ function createPriceTemplate(point) {
   );
 }
 
-function createCitiesTemplate() {
+function createCitiesTemplate(destination) {
   // const cityDestinations = destination;
-  return '<option value="pp">pp</option>';
+  destination.map((item) => (`<option value="pp">${item.name}</option>`)).join('');
+  // console.log(destination, 'pp')
 }
 
-function createOffersTemplate(point, typeOffers) {
+function createOffersTemplate(point) {
   return (
     `
     <div class="event__available-offers">
-    ${typeOffers[0].offers
+    ${point.offers
       .map((element) => {
         const activeOffers = point.offers.filter((item) => item.title === element.title).length > 0 ? 'checked' : '';
 
@@ -101,11 +101,14 @@ function createDescriptionTemplate(point) {
   );
 }
 
-function editPointTemplate({state}) {
+function editPointTemplate({state, pointDestinations, nameDestination}) {
+  console.log(nameDestination, 'kkkk')
   const {data} = state;
-  const {type, name, offers} = data;
+  const {type, offers} = data;
+  // const name = pointDestinations.getById(data.destination);
+  // console.log(pointDestinations.getById(data.destination), 'gggg');
 
-  const typeOffers = mockOffers.filter((item) => item.types === _.capitalize(type));
+  // const typeOffers = data.filter((item) => item.types === _.capitalize(type));
 
   return (
     ` <li class="trip-events__item">
@@ -129,9 +132,9 @@ function editPointTemplate({state}) {
               <label class="event__label  event__type-output" for="event-destination-1">
                 ${type}
               </label>
-              <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${name}" list="destination-list-1">
+              <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${nameDestination}" list="destination-list-1">
               <datalist id="destination-list-1">
-                ${createCitiesTemplate()}
+                ${createCitiesTemplate(pointDestinations)}
               </datalist>
               </div>
 
@@ -151,7 +154,7 @@ function editPointTemplate({state}) {
       `<section class="event__section  event__section--offers">
                 <h3 class="event__section-title  event__section-title--offers">Offers</h3>
 
-                ${createOffersTemplate(data, typeOffers)}
+                ${createOffersTemplate(data)}
 
               </section>`
       : ''
@@ -171,25 +174,31 @@ export default class EditPointView extends AbstractStatefulView {
   #handleSubmit = null;
   #clickResetHandler = null;
   #pointDestinations = null;
+  #pointsOffers = null;
   #datepickerFrom = null;
   #datepickerTo = null;
   #handleDelete = null;
+  #nameDestination = null;
 
-  constructor({ data = BLANK_POINT, pointDestinations, onSubmitClick, clickResetHandler, onDeleteClick }) {
+  constructor({ data = BLANK_POINT, nameDestination, pointDestinations, pointsOffers, onSubmitClick, clickResetHandler, onDeleteClick }) {
     super();
     this._state = data;
+    this.#nameDestination = nameDestination;
     this.#pointDestinations = pointDestinations;
+    this.#pointsOffers = pointsOffers;
     this.#handleSubmit = onSubmitClick;
     this.#clickResetHandler = clickResetHandler;
     this.#handleDelete = onDeleteClick;
     this._setState(EditPointView.parsePointToState({data}));
-
+    // console.log(pointDestinations.name, 'ppp');
     this._restoreHandlers();
   }
 
   get template() {
     return editPointTemplate({
-      state: this._state
+      state: this._state,
+      pointDestinations: this.#pointDestinations,
+      pointsOffers: this.#pointsOffers
     });
   }
 

@@ -46,9 +46,11 @@ export default class PointPresenter {
       pointDestinations: this.#destinations.get(),
       onSubmitClick: this.#handleFormSubmit,
       clickResetHandler: this.#resetClickHandler,
+      nameDestination: this.#destinations.getById(point.destination),
       onDeleteClick: this.#handleDeleteClick,
       pointOffers: this.#offers.get(),
     });
+    // console.log(this.#offers.getByType(point.type), 'f')
 
     if (prevPointComponent === null || prevEditComponent === null) {
       render(this.#pointComponent, this.#pointListContainer);
