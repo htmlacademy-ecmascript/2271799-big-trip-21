@@ -41,17 +41,15 @@ export default class PointPresenter {
       pointDestinations: this.#destinations.getById(point.destination),
       pointOffers: this.#offers.getByType(point.type),
     });
+    // console.log(this.#destinations.get(), this.#offers.get(), 'eddeitP')
     this.#editPointComponent = new EditPointView({
       data: this.#point,
       pointDestinations: this.#destinations.get(),
+      pointsOffers: this.#offers.get(),
       onSubmitClick: this.#handleFormSubmit,
       clickResetHandler: this.#resetClickHandler,
-      nameDestination: this.#destinations.getById(point.destination),
       onDeleteClick: this.#handleDeleteClick,
-      pointOffers: this.#offers.get(),
     });
-    // console.log(this.#offers.getByType(point.type), 'f')
-
     if (prevPointComponent === null || prevEditComponent === null) {
       render(this.#pointComponent, this.#pointListContainer);
       return;

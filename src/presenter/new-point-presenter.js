@@ -7,13 +7,16 @@ export default class NewPointPresenter {
   #handleDataChange = null;
   #handleDestroy = null;
   #destinationModel = null;
-
+  #onDeleteClick = null;
   #pointEditCopmonent = null;
+  #offers = null;
 
-  constructor ({pointListContainer, onDataChange, onDestroy}) {
+  constructor ({pointListContainer, destinations, offers, onDataChange, onDestroy}) {
     this.#pointListContainer = pointListContainer;
     this.#handleDataChange = onDataChange;
     this.#handleDestroy = onDestroy;
+    this.#destinationModel = destinations;
+    this.#offers = offers;
   }
 
   init() {
@@ -21,11 +24,13 @@ export default class NewPointPresenter {
       // eslint-disable-next-line no-useless-return
       return;
     }
-
+console.log(this.#destinationModel.get(), this.#offers.get(), 'newPoint')
     this.#pointEditCopmonent = new EditPointView({
-      pointDestinations: this.#destinationModel,
+      pointDestinations: this.#destinationModel.get(),
+      pointsOffers: this.#offers.get(),
       onSubmitClick: this.#handleFormSubmit,
-      clickResetHandler: this.#handleDeleteClick
+      clickResetHandler: this.#handleDeleteClick,
+      onDeleteClick: this.#onDeleteClick,
     });
 
     render(this.#pointEditCopmonent, this.#pointListContainer, RenderPosition.AFTERBEGIN);

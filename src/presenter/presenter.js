@@ -30,7 +30,6 @@ export default class ContainerPresenter {
   #sourcedBoardPoints = this.#points;
   #filterType = FilterTypes.EVERYTHING;
 
-  // #isLoading = true;
   #uiBlocker = new UiBlocker({
     lowerLimit: TimeLimit.LOWER_LIMIT,
     upperLimit: TimeLimit.UPPER_LIMIT
@@ -47,9 +46,11 @@ export default class ContainerPresenter {
     this.#offers = offers;
 
     this.#newPointPresenter = new NewPointPresenter({
-      pointListContainer: this.#pointList.element,
+      pointListContainer: this.#pointList,
       onDataChange: this.#handleViewAction,
-      onDestroy: onNewPointDestroy
+      onDestroy: onNewPointDestroy,
+      destinations: this.#destinations,
+      offers: this.#offers
     });
     this.#points.addObserver(this.#handleModelEvent);
     this.#filterModel.addObserver(this.#handleModelEvent);
@@ -59,7 +60,6 @@ export default class ContainerPresenter {
     const filtersTypes = this.#filterModel.filter;
     const points = this.#points.points;
     const filteredPoints = filterType[filtersTypes](points);
-    console.log(filteredPoints)
     switch (this.#currentSortType) {
       case SortTypes.PRICE:
         filteredPoints.sort((a, b) => b.price - a.price);
